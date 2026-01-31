@@ -264,9 +264,6 @@ contracts/uploaded/
 *.docx
 *.doc
 
-# IDE
-.kiro/
-
 # Generated reports
 reports/generated/
 output/

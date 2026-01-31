@@ -16,6 +16,24 @@
 
 ---
 
+## 💡 Project: Lex Conductor
+
+Multi-agent decision orchestration system powered by IBM watsonx Orchestrate.
+
+**Key Features**:
+- 🎯 Multi-perspective business analysis (Strategy, Finance, Risk, Operations)
+- 🤖 Hybrid architecture (Native + External agents)
+- 🧠 IBM Granite models for AI reasoning
+- 📊 Transparent decision trails
+
+**Documentation**:
+- 📋 [Product Requirements](docs/impl/PRD.md)
+- 🏗️ [Architecture Overview](docs/impl/Arch.md)
+- 🔧 [Technical Details](docs/impl/Technical.md)
+- 🚀 [Integration Guide](docs/impl/INTEGRATION-GUIDE.md)
+
+---
+
 ## 🎯 Hackathon Overview
 
 **Event**: IBM Dev Day: AI Demystified  
@@ -40,27 +58,21 @@
 
 ---
 
-## 👥 Team AI Kings
-
-| Member | Role | LinkedIn | GitHub | Others |
-|--------|------|----------|--------|---------|
-| **Bryan Stevens Nuñez Acosta** | Team Lead | [LinkedIn](https://linkedin.com/in/bryan-stevens-acosta) | [GitHub](https://github.com/bryanstevensacosta) | [Portfolio/Website](https://bryanacosta.vercel.app) |
-
-
-> 💡 **Team Philosophy**: Leveraging collective intelligence through AI orchestration to solve complex business challenges.
-
----
-
 ## 📁 Repository Structure
 
 ```
-hackathon-ibm-dev-day/
-├── .kiro/steering/              # 📚 Hackathon guidance
-├── docs/                        # � Project documentation
-│   ├── impl/                    # Implementation guides
-│   └── orchestrate/             # watsonx Orchestrate configs
-├── hackathon/                   # � Hackathon rules & guide
+lex-conductor/
+├── docs/                        # 📚 Complete documentation
+│   ├── 01-getting-started/      # Setup and prerequisites
+│   ├── 02-project/              # Project overview and architecture
+│   ├── 03-agents/               # Agent documentation and definitions
+│   ├── 04-development/          # Development guides
+│   ├── 05-integration/          # watsonx integration
+│   ├── 06-hackathon/            # Hackathon requirements
+│   └── 07-infrastructure/       # Infrastructure and security
 ├── terraform/                   # ☁️ Infrastructure as code
+├── .env.example                 # Environment template
+├── requirements.txt             # Python dependencies
 └── README.md                    # This file
 ```
 
@@ -68,6 +80,16 @@ hackathon-ibm-dev-day/
 
 | Document | Purpose | Location |
 |----------|---------|----------|
+| **Documentation Index** | Complete documentation overview | [`docs/README.md`](docs/README.md) |
+| **Getting Started** | Setup and prerequisites | [`docs/01-getting-started/`](docs/01-getting-started/) |
+| **Project Overview** | Architecture, PRD, technical specs | [`docs/02-project/`](docs/02-project/) |
+| **Agents** | Agent documentation and YAML definitions | [`docs/03-agents/`](docs/03-agents/) |
+| **Development** | Development guides and testing | [`docs/04-development/`](docs/04-development/) |
+| **Integration** | watsonx Orchestrate and AI setup | [`docs/05-integration/`](docs/05-integration/) |
+| **Hackathon** | Submission requirements and compliance | [`docs/06-hackathon/`](docs/06-hackathon/) |
+| **Infrastructure** | IBM Cloud and Terraform setup | [`docs/07-infrastructure/`](docs/07-infrastructure/) |
+
+----------|---------|----------|
 | **Hackathon Guide** | Event details, requirements, judging | [`.kiro/steering/hackathon.md`](.kiro/steering/hackathon.md) |
 | **Submission Guide** | Deliverables, templates, process | [`.kiro/steering/submission.md`](.kiro/steering/submission.md) |
 | **Compliance Rules** | Eligibility, code of conduct | [`.kiro/steering/compliance.md`](.kiro/steering/compliance.md) |
@@ -77,33 +99,14 @@ hackathon-ibm-dev-day/
 
 ---
 
-## 💡 Project: Lex Conductor
-
-Multi-agent decision orchestration system powered by IBM watsonx Orchestrate.
-
-**Key Features**:
-- 🎯 Multi-perspective business analysis (Strategy, Finance, Risk, Operations)
-- 🤖 Hybrid architecture (Native + External agents)
-- 🧠 IBM Granite models for AI reasoning
-- 📊 Transparent decision trails
-
-**Documentation**:
-- 📋 [Product Requirements](docs/impl/PRD.md)
-- 🏗️ [Architecture Overview](docs/impl/Arch.md)
-- 🔧 [Technical Details](docs/impl/Technical.md)
-- 🚀 [Integration Guide](docs/impl/INTEGRATION-GUIDE.md)
-
----
-
 ## 🚀 Quick Start
 
 ### 1️⃣ Review Documentation
 ```bash
-# Essential reading:
-1. .kiro/steering/hackathon.md      # Requirements & judging
-2. .kiro/steering/compliance.md     # Rules & eligibility
-3. docs/impl/README.md              # Project overview
-4. docs/impl/INTEGRATION-GUIDE.md   # Setup instructions
+# Start here:
+1. docs/README.md                        # Documentation index
+2. docs/02-project/overview.md           # Project overview
+3. docs/06-hackathon/requirements.md     # Hackathon requirements
 ```
 
 ### 2️⃣ Setup Environment
@@ -120,27 +123,29 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env with your credentials
 
-# Setup infrastructure (optional)
-cd terraform/
-# Follow terraform/README.md
+# Follow detailed guide
+# See docs/01-getting-started/
 ```
 
 ### 3️⃣ Deploy & Test
 ```bash
 # Deploy agents to watsonx Orchestrate
-cd docs/orchestrate/
-# Follow deployment guide in README.md
+cd docs/03-agents/agent-definitions/
+orchestrate agents import -f conductor_agent.yaml
+# Import other agents...
 
 # Test the system
-# Run end-to-end tests
-# Verify all agents respond correctly
+orchestrate chat --agent conductor-agent
+
+# Follow detailed guide
+# See docs/05-integration/
 ```
 
 ### 4️⃣ Submit
 - 📹 Record video demo (≤3 min, ≥90s showing Orchestrate)
 - 📝 Write problem statement (≤500 words)
 - 🤖 Write agentic AI statement
-- ✅ Follow checklist in [`.kiro/steering/submission.md`](.kiro/steering/submission.md)
+- ✅ Follow checklist in [`docs/06-hackathon/checklist.md`](docs/06-hackathon/checklist.md)
 
 ---
 
@@ -251,6 +256,15 @@ cd docs/orchestrate/
 <div align="center">
 
 ### Built with ❤️ by Team AI Kings
+
+| Member | Role | LinkedIn | GitHub | Others |
+|--------|------|----------|--------|---------|
+| **Bryan Stevens Nuñez Acosta** | Team Lead | [LinkedIn](https://linkedin.com/in/bryan-stevens-acosta) | [GitHub](https://github.com/bryanstevensacosta) | [Portfolio/Website](https://bryanacosta.vercel.app) |
+
+
+> 💡 **Team Philosophy**: Leveraging collective intelligence through AI orchestration to solve complex business challenges.
+
+---
 
 <img src="https://www.ibm.com/brand/experience-guides/developer/b1db1ae501d522a1a4b49613fe07c9f4/02_8-bar-reverse.svg" alt="IBM Logo" width="150"/>
 

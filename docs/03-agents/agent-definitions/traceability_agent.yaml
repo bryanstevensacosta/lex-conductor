@@ -1,0 +1,316 @@
+name: traceability-agent
+version: 1.0.0
+description: Generates explainable decision audit trails and Legal Logic Traces
+type: external
+
+connection:
+  type: agent_connect
+  endpoint: ${TRACEABILITY_AGENT_ENDPOINT}
+  api_key: ${TRACEABILITY_AGENT_API_KEY}
+  timeout: 30
+  retry:
+    max_attempts: 3
+    backoff: exponential
+
+capabilities:
+  - audit_trail_generation
+  - legal_logic_trace
+  - confidence_scoring
+  - decision_documentation
+  - explainable_ai
+
+system_prompt: |
+  You are the Traceability Agent, a specialized legal AI that generates explainable audit trails.
+  
+  Your expertise:
+  - Creating comprehensive Legal Logic Traces
+  - Documenting decision reasoning at each step
+  - Calculating and presenting confidence scores
+  - Ensuring transparency and auditability
+  - Generating professional legal documentation
+  
+  Your responsibilities:
+  1. Receive outputs from all other agents
+  2. Synthesize information into coherent narrative
+  3. Document signal analysis and correlations
+  4. Explain risk assessment and routing decisions
+  5. Present recommendations with clear rationale
+  6. Generate confidence scores for each element
+  7. Create audit trail for compliance
+  
+  Legal Logic Trace Components:
+  1. Header: Contract ID, timestamp, classification
+  2. Signal Analysis: Internal, external, historical signals
+  3. Correlation Matrix: How signals align or conflict
+  4. Risk Assessment: Risk score, complexity, routing
+  5. Recommendations: Actionable next steps with rationale
+  6. Confidence Scores: For each recommendation
+  7. Audit Trail: Complete decision history
+  
+  Output Formats:
+  - Markdown: For human-readable reports
+  - JSON: For programmatic access
+  - HTML: For web display (optional)
+  
+  Tone: Professional, clear, legally precise, explainable
+
+input_schema:
+  type: object
+  properties:
+    contract_id:
+      type: string
+      description: Unique identifier for the contract
+    contract_type:
+      type: string
+      description: Type of contract analyzed
+    jurisdiction:
+      type: string
+      description: Applicable jurisdiction
+    timestamp:
+      type: string
+      format: date-time
+      description: Analysis timestamp
+    fusion_output:
+      type: object
+      description: Complete output from Fusion Agent
+    routing_output:
+      type: object
+      description: Complete output from Routing Agent
+    memory_output:
+      type: object
+      description: Complete output from Memory Agent
+    user_context:
+      type: object
+      description: Additional user-provided context (optional)
+      properties:
+        user_name:
+          type: string
+        department:
+          type: string
+        urgency:
+          type: string
+  required:
+    - contract_id
+    - contract_type
+    - fusion_output
+    - routing_output
+    - memory_output
+
+output_schema:
+  type: object
+  properties:
+    legal_logic_trace:
+      type: object
+      properties:
+        header:
+          type: object
+          properties:
+            contract_id:
+              type: string
+            contract_type:
+              type: string
+            jurisdiction:
+              type: string
+            timestamp:
+              type: string
+            analysis_duration:
+              type: string
+        signal_analysis:
+          type: object
+          properties:
+            internal_signals:
+              type: array
+              items:
+                type: object
+            external_signals:
+              type: array
+              items:
+                type: object
+            historical_signals:
+              type: array
+              items:
+                type: object
+            correlation_summary:
+              type: string
+        risk_assessment:
+          type: object
+          properties:
+            risk_score:
+              type: number
+            complexity_level:
+              type: string
+            routing_decision:
+              type: string
+            human_in_loop:
+              type: object
+            risk_factors:
+              type: array
+            justification:
+              type: string
+        recommendations:
+          type: array
+          items:
+            type: object
+            properties:
+              action:
+                type: string
+              rationale:
+                type: string
+              priority:
+                type: string
+              confidence:
+                type: number
+              based_on:
+                type: array
+                items:
+                  type: string
+        confidence_scores:
+          type: object
+          properties:
+            overall:
+              type: number
+            fusion_analysis:
+              type: number
+            routing_decision:
+              type: number
+            precedent_strength:
+              type: number
+        next_steps:
+          type: array
+          items:
+            type: object
+            properties:
+              step:
+                type: string
+              responsible:
+                type: string
+              timeline:
+                type: string
+        audit_trail:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+              agent:
+                type: string
+              action:
+                type: string
+              result:
+                type: string
+    formatted_output:
+      type: object
+      properties:
+        markdown:
+          type: string
+          description: Human-readable Markdown format
+        json:
+          type: object
+          description: Structured JSON format
+        summary:
+          type: string
+          description: Executive summary (2-3 sentences)
+  required:
+    - legal_logic_trace
+    - formatted_output
+
+trace_template: |
+  ═══════════════════════════════════════════════════
+  LEGAL LOGIC TRACE
+  ═══════════════════════════════════════════════════
+  
+  Contract: {contract_id}
+  Type: {contract_type}
+  Jurisdiction: {jurisdiction}
+  Timestamp: {timestamp}
+  Analysis Duration: {duration}
+  
+  ───────────────────────────────────────────────────
+  SIGNAL ANALYSIS
+  ───────────────────────────────────────────────────
+  
+  Internal Signal (Company Policy):
+  {internal_signals_summary}
+  
+  External Signal (Regulatory Requirements):
+  {external_signals_summary}
+  
+  Historical Signal (Precedents):
+  {historical_signals_summary}
+  
+  Correlation Matrix:
+  {correlation_matrix}
+  
+  ───────────────────────────────────────────────────
+  RISK ASSESSMENT
+  ───────────────────────────────────────────────────
+  
+  Overall Risk Level: {risk_level}
+  Risk Score: {risk_score} (0.0 = Low, 1.0 = High)
+  Complexity: {complexity_level}
+  Routing Decision: {routing_decision}
+  
+  Risk Factors:
+  {risk_factors_list}
+  
+  Justification:
+  {routing_justification}
+  
+  ───────────────────────────────────────────────────
+  RECOMMENDED ACTIONS
+  ───────────────────────────────────────────────────
+  
+  {recommendations_list}
+  
+  ───────────────────────────────────────────────────
+  CONFIDENCE SCORES
+  ───────────────────────────────────────────────────
+  
+  Overall Confidence: {overall_confidence}
+  Fusion Analysis: {fusion_confidence}
+  Routing Decision: {routing_confidence}
+  Precedent Strength: {precedent_confidence}
+  
+  ───────────────────────────────────────────────────
+  NEXT STEPS
+  ───────────────────────────────────────────────────
+  
+  {next_steps_list}
+  
+  ═══════════════════════════════════════════════════
+  Generated by: LexConductor v1.0
+  Powered by: IBM watsonx Orchestrate + Granite 3 8B
+  Team: AI Kings 👑
+  ═══════════════════════════════════════════════════
+
+error_handling:
+  on_timeout:
+    action: retry
+    message: "Trace generation timed out. Retrying..."
+  on_error:
+    action: return_basic_trace
+    message: "Trace generation error. Returning basic audit trail."
+
+performance:
+  expected_response_time: 1000  # milliseconds
+  max_response_time: 2000
+
+formatting_options:
+  include_timestamps: true
+  include_agent_names: true
+  include_confidence_scores: true
+  include_audit_trail: true
+  color_coding: false  # For terminal output
+  emoji_indicators: true  # ✓ ⚠ ❌
+
+metadata:
+  author: Team AI Kings
+  created: 2026-01-30
+  hackathon: IBM Dev Day AI Demystified 2026
+  tags:
+    - traceability
+    - audit-trail
+    - explainable-ai
+    - legal-logic-trace
+    - external-agent

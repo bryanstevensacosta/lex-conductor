@@ -123,8 +123,10 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env with your credentials
 
-# Follow detailed guide
-# See docs/01-getting-started/
+# 📖 Detailed Setup Guides:
+# English: docs/IBM_CLOUD_SETUP.md
+# Español: docs/GUIA_CREDENCIALES_ES.md (Guía completa)
+# Español: docs/GUIA_RAPIDA_ES.md (Guía rápida - 35 min)
 ```
 
 ### 3️⃣ Deploy & Test

@@ -1,0 +1,28 @@
+#!/bin/bash
+# Pre-commit hook to prevent direct commits to master/main branches
+# IBM Dev Day AI Demystified Hackathon 2026
+# Team: AI Kings 👑
+
+# Get current branch name
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+# Protected branches
+PROTECTED_BRANCHES="^(master|main)$"
+
+# Check if we're on a protected branch
+if [[ "$BRANCH" =~ $PROTECTED_BRANCHES ]]; then
+    echo "❌ ERROR: Direct commits to '$BRANCH' branch are not allowed!"
+    echo ""
+    echo "Please create a feature branch instead:"
+    echo "  git checkout -b feature/your-feature-name"
+    echo ""
+    echo "Or if you have uncommitted changes:"
+    echo "  git stash"
+    echo "  git checkout -b feature/your-feature-name"
+    echo "  git stash pop"
+    echo ""
+    exit 1
+fi
+
+# If we get here, we're on a feature branch - allow the commit
+exit 0

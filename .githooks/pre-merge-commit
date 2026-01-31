@@ -1,0 +1,19 @@
+#!/bin/bash
+# Pre-merge-commit hook to prevent local merges
+# IBM Dev Day AI Demystified Hackathon 2026
+# Team: AI Kings 👑
+
+echo "❌ ERROR: Local merges are not allowed!"
+echo ""
+echo "Please use Pull Requests for merging branches."
+echo ""
+echo "Workflow:"
+echo "  1. Push your feature branch: git push origin feature/your-feature"
+echo "  2. Create a Pull Request on GitHub/GitLab"
+echo "  3. Review and merge through the web interface"
+echo ""
+echo "If you need to update your branch with latest changes:"
+echo "  git fetch origin"
+echo "  git rebase origin/main"
+echo ""
+exit 1

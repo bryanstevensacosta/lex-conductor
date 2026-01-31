@@ -5,6 +5,7 @@
 # CRITICAL: Environment Variables & Secrets (NEVER COMMIT)
 # ============================================================================
 .env
+.env.setup
 .env.local
 .env.*.local
 .env.production

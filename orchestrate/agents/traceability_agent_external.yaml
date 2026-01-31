@@ -1,0 +1,282 @@
+name: traceability-agent
+version: 1.0.0
+description: Generates comprehensive audit trails and Legal Logic Traces for contract decisions
+type: external
+
+connection:
+  type: agent_connect
+  endpoint: ${TRACEABILITY_AGENT_ENDPOINT}
+  api_key: ${TRACEABILITY_AGENT_API_KEY}
+  timeout: 30
+  retry:
+    max_attempts: 3
+    backoff: exponential
+
+capabilities:
+  - audit_trail_generation
+  - decision_provenance
+  - legal_logic_trace
+  - compliance_documentation
+  - explainable_ai
+
+system_prompt: |
+  You are the Traceability Agent, a specialized legal AI that creates comprehensive audit trails.
+  
+  Your expertise:
+  - Generating Legal Logic Traces that explain AI decisions
+  - Creating audit trails for compliance and governance
+  - Documenting decision provenance (who, what, when, why)
+  - Providing explainable AI outputs for legal professionals
+  - Ensuring transparency and accountability
+  
+  Legal Logic Trace Components:
+  1. Contract Classification: Type, jurisdiction, complexity
+  2. Signal Analysis: Internal policies, external regulations, historical precedents
+  3. Gap Detection: Compliance gaps identified with severity
+  4. Risk Assessment: Risk score, routing decision, human-in-loop requirements
+  5. Recommendations: Specific actions with rationale and confidence
+  6. Decision Provenance: Which agents contributed, what data was used
+  7. Confidence Scores: Overall and per-component confidence
+  8. Audit Metadata: Timestamps, versions, approvals
+  
+  Your analysis process:
+  1. Receive outputs from all agents (Fusion, Memory, Routing)
+  2. Synthesize into coherent narrative
+  3. Add decision provenance metadata
+  4. Calculate overall confidence
+  5. Generate structured Legal Logic Trace
+  6. Store audit trail in Cloudant
+  7. Return formatted trace for user
+  
+  Output format: Structured JSON with complete Legal Logic Trace
+
+input_schema:
+  type: object
+  properties:
+    contract_id:
+      type: string
+      description: Unique identifier for the contract
+    contract_type:
+      type: string
+      description: Type of contract
+    jurisdiction:
+      type: string
+      description: Applicable jurisdiction
+    fusion_output:
+      type: object
+      description: Complete output from Fusion Agent
+    memory_output:
+      type: object
+      description: Complete output from Memory Agent
+    routing_output:
+      type: object
+      description: Complete output from Routing Agent
+    user_context:
+      type: object
+      description: User information and session context
+      properties:
+        user_id:
+          type: string
+        session_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+  required:
+    - contract_id
+    - contract_type
+    - fusion_output
+    - routing_output
+
+output_schema:
+  type: object
+  properties:
+    legal_logic_trace:
+      type: object
+      properties:
+        contract_classification:
+          type: object
+          properties:
+            type:
+              type: string
+            jurisdiction:
+              type: string
+            complexity:
+              type: string
+            confidence:
+              type: number
+        signal_analysis:
+          type: object
+          properties:
+            internal_signals:
+              type: array
+              description: Golden Clauses analyzed
+            external_signals:
+              type: array
+              description: Regulatory requirements checked
+            historical_precedents:
+              type: array
+              description: Past decisions referenced
+            correlation_summary:
+              type: string
+        gap_detection:
+          type: object
+          properties:
+            gaps_found:
+              type: integer
+            critical_gaps:
+              type: integer
+            gap_details:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  severity:
+                    type: string
+                  description:
+                    type: string
+                  recommendation:
+                    type: string
+        risk_assessment:
+          type: object
+          properties:
+            risk_score:
+              type: number
+            complexity_level:
+              type: string
+            routing_decision:
+              type: string
+            human_in_loop:
+              type: object
+            justification:
+              type: string
+        recommendations:
+          type: array
+          items:
+            type: object
+            properties:
+              action:
+                type: string
+              rationale:
+                type: string
+              priority:
+                type: string
+              confidence:
+                type: number
+              based_on:
+                type: array
+                items:
+                  type: string
+        decision_provenance:
+          type: object
+          properties:
+            agents_involved:
+              type: array
+              items:
+                type: string
+            data_sources:
+              type: array
+              items:
+                type: string
+            models_used:
+              type: array
+              items:
+                type: string
+            execution_timeline:
+              type: array
+              items:
+                type: object
+                properties:
+                  agent:
+                    type: string
+                  start_time:
+                    type: string
+                  end_time:
+                    type: string
+                  duration_ms:
+                    type: integer
+        confidence_scores:
+          type: object
+          properties:
+            overall:
+              type: number
+            fusion_analysis:
+              type: number
+            memory_search:
+              type: number
+            routing_decision:
+              type: number
+        audit_metadata:
+          type: object
+          properties:
+            trace_id:
+              type: string
+            contract_id:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+            user_id:
+              type: string
+            session_id:
+              type: string
+            system_version:
+              type: string
+            compliance_flags:
+              type: array
+              items:
+                type: string
+    summary:
+      type: object
+      properties:
+        decision:
+          type: string
+        next_steps:
+          type: string
+        estimated_time:
+          type: string
+        confidence:
+          type: number
+    audit_trail_stored:
+      type: boolean
+      description: Whether audit trail was successfully stored in Cloudant
+  required:
+    - legal_logic_trace
+    - summary
+    - audit_trail_stored
+
+error_handling:
+  on_timeout:
+    action: retry
+    message: "Traceability generation timed out. Retrying..."
+  on_error:
+    action: return_partial
+    message: "Traceability generation encountered an error. Returning partial trace."
+  on_storage_failure:
+    action: continue
+    message: "Failed to store audit trail. Trace still returned to user."
+
+performance:
+  expected_response_time: 2000  # milliseconds
+  max_response_time: 3000
+
+storage:
+  database: historical_decisions
+  collection: audit_trails
+  retention_days: 2555  # 7 years for legal compliance
+  backup: true
+
+metadata:
+  author: Team AI Kings
+  created: 2026-01-30
+  hackathon: IBM Dev Day AI Demystified 2026
+  data_sources:
+    - Cloudant (historical_decisions database)
+  tags:
+    - traceability
+    - audit-trail
+    - legal-logic-trace
+    - explainable-ai
+    - external-agent

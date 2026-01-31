@@ -6,10 +6,9 @@ IBM Dev Day AI Demystified Hackathon 2026
 This script verifies that all required services and dependencies are properly configured.
 """
 
-import os
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 # Color codes for terminal output
 GREEN = "\033[92m"
@@ -53,21 +52,23 @@ def check_python_version() -> bool:
         print_success(f"Python {version.major}.{version.minor}.{version.micro} detected")
         return True
     else:
-        print_error(f"Python {version.major}.{version.minor}.{version.micro} detected (3.11+ required)")
+        print_error(
+            f"Python {version.major}.{version.minor}.{version.micro} detected (3.11+ required)"
+        )
         return False
 
 
 def check_env_file() -> Tuple[bool, List[str]]:
     """Check if .env file exists and has required variables."""
     env_path = Path(".env")
-    
+
     if not env_path.exists():
         print_error(".env file not found")
         print_info("Run: cp .env.example .env")
         return False, []
-    
+
     print_success(".env file exists")
-    
+
     # Required environment variables
     required_vars = [
         "WO_INSTANCE",
@@ -80,10 +81,10 @@ def check_env_file() -> Tuple[bool, List[str]]:
         "COS_API_KEY",
         "COS_INSTANCE_ID",
     ]
-    
+
     missing_vars = []
     placeholder_vars = []
-    
+
     # Load .env file
     env_vars = {}
     with open(env_path, "r") as f:
@@ -92,25 +93,25 @@ def check_env_file() -> Tuple[bool, List[str]]:
             if line and not line.startswith("#") and "=" in line:
                 key, value = line.split("=", 1)
                 env_vars[key.strip()] = value.strip()
-    
+
     # Check each required variable
     for var in required_vars:
         if var not in env_vars:
             missing_vars.append(var)
         elif "your_" in env_vars[var] or "your-" in env_vars[var]:
             placeholder_vars.append(var)
-    
+
     if missing_vars:
         print_error(f"Missing environment variables: {', '.join(missing_vars)}")
-    
+
     if placeholder_vars:
         print_warning(f"Placeholder values detected: {', '.join(placeholder_vars)}")
         print_info("Update these with your actual IBM Cloud credentials")
-    
+
     if not missing_vars and not placeholder_vars:
         print_success("All required environment variables are configured")
         return True, []
-    
+
     return len(missing_vars) == 0, placeholder_vars
 
 
@@ -131,9 +132,9 @@ def check_dependencies() -> bool:
         ("pytest", "pytest"),
         ("hypothesis", "hypothesis"),
     ]
-    
+
     missing_packages = []
-    
+
     for display_name, import_name in required_packages:
         try:
             __import__(import_name.replace("-", "_"))
@@ -141,34 +142,31 @@ def check_dependencies() -> bool:
         except ImportError:
             missing_packages.append(display_name)
             print_error(f"{display_name} not installed")
-    
+
     if missing_packages:
         print_error(f"Missing packages: {', '.join(missing_packages)}")
         print_info("Run: pip install -r requirements.txt")
         return False
-    
+
     return True
 
 
 def check_orchestrate_adk() -> bool:
     """Check if watsonx Orchestrate ADK is installed."""
     import subprocess
-    
+
     try:
         result = subprocess.run(
-            ["orchestrate", "--version"],
-            capture_output=True,
-            text=True,
-            check=True
+            ["orchestrate", "--version"], capture_output=True, text=True, check=True
         )
-        
+
         # Extract version from output
         for line in result.stdout.split("\n"):
             if "ADK Version:" in line:
                 version = line.split(":")[-1].strip()
                 print_success(f"watsonx Orchestrate ADK {version} installed")
                 return True
-        
+
         print_success("watsonx Orchestrate ADK installed")
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
@@ -186,9 +184,9 @@ def check_directory_structure() -> bool:
         "docs",
         "tests",
     ]
-    
+
     missing_dirs = []
-    
+
     for dir_path in required_dirs:
         path = Path(dir_path)
         if path.exists():
@@ -196,40 +194,40 @@ def check_directory_structure() -> bool:
         else:
             missing_dirs.append(dir_path)
             print_warning(f"{dir_path}/ not found (will be created during implementation)")
-    
+
     return True  # Not critical for initial setup
 
 
 def check_gitignore() -> bool:
     """Check if .gitignore properly excludes sensitive files."""
     gitignore_path = Path(".gitignore")
-    
+
     if not gitignore_path.exists():
         print_error(".gitignore not found")
         return False
-    
+
     with open(gitignore_path, "r") as f:
         content = f.read()
-    
+
     required_patterns = [".env", "*.key", "credentials.json", "__pycache__"]
-    
+
     missing_patterns = []
     for pattern in required_patterns:
         if pattern not in content:
             missing_patterns.append(pattern)
-    
+
     if missing_patterns:
         print_warning(f"Missing .gitignore patterns: {', '.join(missing_patterns)}")
     else:
         print_success(".gitignore properly configured")
-    
+
     return len(missing_patterns) == 0
 
 
 def print_next_steps(has_placeholders: bool):
     """Print next steps for the user."""
     print_header("NEXT STEPS")
-    
+
     if has_placeholders:
         print_info("1. Configure IBM Cloud Services:")
         print("   - Create Cloudant instance (Lite plan, US-South)")
@@ -240,7 +238,7 @@ def print_next_steps(has_placeholders: bool):
         print()
         print_info("2. Update .env file with your credentials")
         print()
-    
+
     print_info("3. Verify connectivity:")
     print("   python scripts/test_connections.py")
     print()
@@ -257,37 +255,37 @@ def main():
     print_header("LexConductor - Setup Verification")
     print_info("IBM Dev Day AI Demystified Hackathon 2026")
     print_info("Team: AI Kings 👑")
-    
+
     checks = []
-    
+
     # Run all checks
     print_header("Checking Python Environment")
     checks.append(("Python Version", check_python_version()))
-    
+
     print_header("Checking Dependencies")
     checks.append(("Python Packages", check_dependencies()))
     checks.append(("watsonx Orchestrate ADK", check_orchestrate_adk()))
-    
+
     print_header("Checking Configuration")
     env_ok, placeholders = check_env_file()
     checks.append(("Environment Variables", env_ok))
     checks.append((".gitignore", check_gitignore()))
-    
+
     print_header("Checking Project Structure")
     checks.append(("Directory Structure", check_directory_structure()))
-    
+
     # Summary
     print_header("VERIFICATION SUMMARY")
-    
+
     passed = sum(1 for _, result in checks if result)
     total = len(checks)
-    
+
     for name, result in checks:
         if result:
             print_success(f"{name}: PASS")
         else:
             print_error(f"{name}: FAIL")
-    
+
     print()
     if passed == total:
         print_success(f"All checks passed ({passed}/{total})")
@@ -296,10 +294,10 @@ def main():
             print_warning("Update .env with your actual IBM Cloud credentials")
     else:
         print_error(f"Some checks failed ({passed}/{total} passed)")
-    
+
     # Print next steps
     print_next_steps(len(placeholders) > 0)
-    
+
     return passed == total and len(placeholders) == 0
 
 

@@ -3,24 +3,30 @@ Property Test 10: Confidence Score Validity
 Feature: lex-conductor-implementation
 Validates: Requirements 3.5
 
-For any recommendation in a Legal Logic Trace, the confidence score should be 
+For any recommendation in a Legal Logic Trace, the confidence score should be
 a number in the range [0.0, 1.0].
 """
 
 import pytest
 from hypothesis import given, strategies as st, settings
 from backend.models import (
-    InternalSignal, ExternalSignal, HistoricalSignal,
-    ComplianceGap, RecommendedAction, HistoricalDecision,
-    SignalAlignment, SeverityLevel, ContractType, Jurisdiction
+    InternalSignal,
+    ExternalSignal,
+    HistoricalSignal,
+    ComplianceGap,
+    RecommendedAction,
+    HistoricalDecision,
+    SignalAlignment,
+    SeverityLevel,
+    ContractType,
 )
 from datetime import datetime
 from pydantic import ValidationError
 
-
 # ============================================================================
 # Hypothesis Strategies
 # ============================================================================
+
 
 @st.composite
 def valid_confidence_score(draw):
@@ -31,25 +37,28 @@ def valid_confidence_score(draw):
 @st.composite
 def invalid_confidence_score(draw):
     """Generate invalid confidence scores outside [0.0, 1.0]"""
-    return draw(st.one_of(
-        st.floats(min_value=-100.0, max_value=-0.01),  # Negative
-        st.floats(min_value=1.01, max_value=100.0),     # > 1.0
-        st.just(float('inf')),                          # Infinity
-        st.just(float('-inf')),                         # Negative infinity
-    ))
+    return draw(
+        st.one_of(
+            st.floats(min_value=-100.0, max_value=-0.01),  # Negative
+            st.floats(min_value=1.01, max_value=100.0),  # > 1.0
+            st.just(float("inf")),  # Infinity
+            st.just(float("-inf")),  # Negative infinity
+        )
+    )
 
 
 # ============================================================================
 # Property Tests
 # ============================================================================
 
+
 class TestProperty10ConfidenceScoreValidity:
     """
     Property 10: Confidence Score Validity
-    
+
     For any model with a confidence score field, the score must be in [0.0, 1.0].
     """
-    
+
     @given(confidence=valid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_internal_signal_valid_confidence(self, confidence):
@@ -59,10 +68,10 @@ class TestProperty10ConfidenceScoreValidity:
             type="test_type",
             text="Test text",
             confidence=confidence,
-            alignment=SignalAlignment.MATCH
+            alignment=SignalAlignment.MATCH,
         )
         assert 0.0 <= signal.confidence <= 1.0
-    
+
     @given(confidence=invalid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_internal_signal_invalid_confidence(self, confidence):
@@ -73,10 +82,10 @@ class TestProperty10ConfidenceScoreValidity:
                 type="test_type",
                 text="Test text",
                 confidence=confidence,
-                alignment=SignalAlignment.MATCH
+                alignment=SignalAlignment.MATCH,
             )
         assert "confidence" in str(exc_info.value).lower()
-    
+
     @given(confidence=valid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_external_signal_valid_confidence(self, confidence):
@@ -86,10 +95,10 @@ class TestProperty10ConfidenceScoreValidity:
             regulation="Test Reg",
             requirement="Test requirement",
             confidence=confidence,
-            alignment=SignalAlignment.MATCH
+            alignment=SignalAlignment.MATCH,
         )
         assert 0.0 <= signal.confidence <= 1.0
-    
+
     @given(confidence=invalid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_external_signal_invalid_confidence(self, confidence):
@@ -100,14 +109,11 @@ class TestProperty10ConfidenceScoreValidity:
                 regulation="Test Reg",
                 requirement="Test requirement",
                 confidence=confidence,
-                alignment=SignalAlignment.MATCH
+                alignment=SignalAlignment.MATCH,
             )
         assert "confidence" in str(exc_info.value).lower()
-    
-    @given(
-        confidence=valid_confidence_score(),
-        similarity=valid_confidence_score()
-    )
+
+    @given(confidence=valid_confidence_score(), similarity=valid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_historical_signal_valid_scores(self, confidence, similarity):
         """HistoricalSignal accepts valid confidence and similarity scores"""
@@ -118,11 +124,11 @@ class TestProperty10ConfidenceScoreValidity:
             rationale="Test rationale",
             confidence=confidence,
             similarity_score=similarity,
-            date=datetime.now()
+            date=datetime.now(),
         )
         assert 0.0 <= signal.confidence <= 1.0
         assert 0.0 <= signal.similarity_score <= 1.0
-    
+
     @given(confidence=invalid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_historical_signal_invalid_confidence(self, confidence):
@@ -135,11 +141,11 @@ class TestProperty10ConfidenceScoreValidity:
                 rationale="Test rationale",
                 confidence=confidence,
                 similarity_score=0.5,
-                date=datetime.now()
+                date=datetime.now(),
             )
         # Should fail validation
         assert exc_info.value is not None
-    
+
     @given(confidence=valid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_compliance_gap_valid_confidence(self, confidence):
@@ -149,10 +155,10 @@ class TestProperty10ConfidenceScoreValidity:
             issue="Test issue",
             severity=SeverityLevel.MEDIUM,
             recommendation="Test recommendation",
-            confidence=confidence
+            confidence=confidence,
         )
         assert 0.0 <= gap.confidence <= 1.0
-    
+
     @given(confidence=invalid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_compliance_gap_invalid_confidence(self, confidence):
@@ -163,10 +169,10 @@ class TestProperty10ConfidenceScoreValidity:
                 issue="Test issue",
                 severity=SeverityLevel.MEDIUM,
                 recommendation="Test recommendation",
-                confidence=confidence
+                confidence=confidence,
             )
         assert exc_info.value is not None
-    
+
     @given(confidence=valid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_recommended_action_valid_confidence(self, confidence):
@@ -176,10 +182,10 @@ class TestProperty10ConfidenceScoreValidity:
             action="MODIFY",
             rationale="Test rationale",
             confidence=confidence,
-            priority="MEDIUM"
+            priority="MEDIUM",
         )
         assert 0.0 <= action.confidence <= 1.0
-    
+
     @given(confidence=invalid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_recommended_action_invalid_confidence(self, confidence):
@@ -190,10 +196,10 @@ class TestProperty10ConfidenceScoreValidity:
                 action="MODIFY",
                 rationale="Test rationale",
                 confidence=confidence,
-                priority="MEDIUM"
+                priority="MEDIUM",
             )
         assert exc_info.value is not None
-    
+
     @given(confidence=valid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_historical_decision_valid_confidence(self, confidence):
@@ -209,10 +215,10 @@ class TestProperty10ConfidenceScoreValidity:
             approved_by="Test Approver",
             date=datetime.now().isoformat(),
             jurisdiction="US",
-            confidence=confidence
+            confidence=confidence,
         )
         assert 0.0 <= decision.confidence <= 1.0
-    
+
     @given(confidence=invalid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_historical_decision_invalid_confidence(self, confidence):
@@ -229,10 +235,10 @@ class TestProperty10ConfidenceScoreValidity:
                 approved_by="Test Approver",
                 date=datetime.now().isoformat(),
                 jurisdiction="US",
-                confidence=confidence
+                confidence=confidence,
             )
         assert exc_info.value is not None
-    
+
     @given(confidence=valid_confidence_score())
     @settings(max_examples=100, deadline=5000)
     def test_boundary_values(self, confidence):
@@ -244,17 +250,17 @@ class TestProperty10ConfidenceScoreValidity:
                 type="test",
                 text="Test",
                 confidence=boundary,
-                alignment=SignalAlignment.MATCH
+                alignment=SignalAlignment.MATCH,
             )
             assert signal.confidence == boundary
-        
+
         # Test with generated value
         signal = InternalSignal(
             source="Test",
             type="test",
             text="Test",
             confidence=confidence,
-            alignment=SignalAlignment.MATCH
+            alignment=SignalAlignment.MATCH,
         )
         assert 0.0 <= signal.confidence <= 1.0
 
@@ -263,9 +269,10 @@ class TestProperty10ConfidenceScoreValidity:
 # Edge Case Tests
 # ============================================================================
 
+
 class TestConfidenceScoreEdgeCases:
     """Test edge cases for confidence score validation"""
-    
+
     def test_exact_zero(self):
         """Test that exactly 0.0 is valid"""
         signal = InternalSignal(
@@ -273,10 +280,10 @@ class TestConfidenceScoreEdgeCases:
             type="test",
             text="Test",
             confidence=0.0,
-            alignment=SignalAlignment.MATCH
+            alignment=SignalAlignment.MATCH,
         )
         assert signal.confidence == 0.0
-    
+
     def test_exact_one(self):
         """Test that exactly 1.0 is valid"""
         signal = InternalSignal(
@@ -284,10 +291,10 @@ class TestConfidenceScoreEdgeCases:
             type="test",
             text="Test",
             confidence=1.0,
-            alignment=SignalAlignment.MATCH
+            alignment=SignalAlignment.MATCH,
         )
         assert signal.confidence == 1.0
-    
+
     def test_slightly_below_zero(self):
         """Test that -0.01 is invalid"""
         with pytest.raises(ValidationError):
@@ -296,9 +303,9 @@ class TestConfidenceScoreEdgeCases:
                 type="test",
                 text="Test",
                 confidence=-0.01,
-                alignment=SignalAlignment.MATCH
+                alignment=SignalAlignment.MATCH,
             )
-    
+
     def test_slightly_above_one(self):
         """Test that 1.01 is invalid"""
         with pytest.raises(ValidationError):
@@ -307,9 +314,9 @@ class TestConfidenceScoreEdgeCases:
                 type="test",
                 text="Test",
                 confidence=1.01,
-                alignment=SignalAlignment.MATCH
+                alignment=SignalAlignment.MATCH,
             )
-    
+
     def test_nan_rejected(self):
         """Test that NaN is rejected"""
         with pytest.raises(ValidationError):
@@ -317,10 +324,10 @@ class TestConfidenceScoreEdgeCases:
                 source="Test",
                 type="test",
                 text="Test",
-                confidence=float('nan'),
-                alignment=SignalAlignment.MATCH
+                confidence=float("nan"),
+                alignment=SignalAlignment.MATCH,
             )
-    
+
     def test_infinity_rejected(self):
         """Test that infinity is rejected"""
         with pytest.raises(ValidationError):
@@ -328,10 +335,10 @@ class TestConfidenceScoreEdgeCases:
                 source="Test",
                 type="test",
                 text="Test",
-                confidence=float('inf'),
-                alignment=SignalAlignment.MATCH
+                confidence=float("inf"),
+                alignment=SignalAlignment.MATCH,
             )
-    
+
     def test_negative_infinity_rejected(self):
         """Test that negative infinity is rejected"""
         with pytest.raises(ValidationError):
@@ -339,6 +346,6 @@ class TestConfidenceScoreEdgeCases:
                 source="Test",
                 type="test",
                 text="Test",
-                confidence=float('-inf'),
-                alignment=SignalAlignment.MATCH
+                confidence=float("-inf"),
+                alignment=SignalAlignment.MATCH,
             )

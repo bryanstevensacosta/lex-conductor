@@ -27,49 +27,60 @@ load_dotenv()
 
 class COSBucketSetup:
     """Setup Cloud Object Storage buckets and regulatory mappings"""
-    
+
     def __init__(self):
         """Initialize COS and Cloudant clients"""
         # COS credentials
-        self.cos_api_key = os.getenv('COS_API_KEY')
-        self.cos_instance_id = os.getenv('COS_INSTANCE_ID')
-        self.cos_endpoint = os.getenv('COS_ENDPOINT', 's3.us-south.cloud-object-storage.appdomain.cloud')
-        self.cos_auth_endpoint = os.getenv('COS_AUTH_ENDPOINT', 'https://iam.cloud.ibm.com/identity/token')
-        self.bucket_name = os.getenv('COS_BUCKET_NAME', 'watsonx-hackathon-regulations')
-        
+        self.cos_api_key = os.getenv("COS_API_KEY")
+        self.cos_instance_id = os.getenv("COS_INSTANCE_ID")
+        self.cos_endpoint = os.getenv(
+            "COS_ENDPOINT", "s3.us-south.cloud-object-storage.appdomain.cloud"
+        )
+        self.cos_auth_endpoint = os.getenv(
+            "COS_AUTH_ENDPOINT", "https://iam.cloud.ibm.com/identity/token"
+        )
+        self.bucket_name = os.getenv("COS_BUCKET_NAME", "watsonx-hackathon-regulations")
+
         # Cloudant credentials
-        self.cloudant_url = os.getenv('CLOUDANT_URL')
-        self.cloudant_api_key = os.getenv('CLOUDANT_API_KEY')
-        self.mappings_db = os.getenv('CLOUDANT_DB_REGULATORY_MAPPINGS', 'regulatory_mappings')
-        
-        if not all([self.cos_api_key, self.cos_instance_id, self.cloudant_url, self.cloudant_api_key]):
+        self.cloudant_url = os.getenv("CLOUDANT_URL")
+        self.cloudant_api_key = os.getenv("CLOUDANT_API_KEY")
+        self.mappings_db = os.getenv("CLOUDANT_DB_REGULATORY_MAPPINGS", "regulatory_mappings")
+
+        if not all(
+            [
+                self.cos_api_key,
+                self.cos_instance_id,
+                self.cloudant_url,
+                self.cloudant_api_key,
+            ]
+        ):
             raise ValueError(
                 "Missing credentials. Please set COS_API_KEY, COS_INSTANCE_ID, "
                 "CLOUDANT_URL, and CLOUDANT_API_KEY in your .env file"
             )
-        
+
         # Initialize COS client
         self.cos_client = ibm_boto3.client(
-            's3',
+            "s3",
             ibm_api_key_id=self.cos_api_key,
             ibm_service_instance_id=self.cos_instance_id,
             ibm_auth_endpoint=self.cos_auth_endpoint,
-            config=Config(signature_version='oauth'),
-            endpoint_url=f'https://{self.cos_endpoint}'
+            config=Config(signature_version="oauth"),
+            endpoint_url=f"https://{self.cos_endpoint}",
         )
-        
+
         # Initialize Cloudant client
         authenticator = IAMAuthenticator(self.cloudant_api_key)
         self.cloudant_client = CloudantV1(authenticator=authenticator)
         self.cloudant_client.set_service_url(self.cloudant_url)
-        
+
         print(f"✓ Connected to COS: {self.cos_endpoint}")
         print(f"✓ Connected to Cloudant: {self.cloudant_url}")
-    
+
     def create_bucket(self) -> bool:
         """Create COS bucket if it doesn't exist"""
         print(f"\n🪣 Creating bucket: {self.bucket_name}...")
-        
+
         try:
             # Check if bucket exists
             self.cos_client.head_bucket(Bucket=self.bucket_name)
@@ -80,38 +91,32 @@ class COSBucketSetup:
             try:
                 self.cos_client.create_bucket(
                     Bucket=self.bucket_name,
-                    CreateBucketConfiguration={
-                        'LocationConstraint': 'us-south-standard'
-                    }
+                    CreateBucketConfiguration={"LocationConstraint": "us-south-standard"},
                 )
                 print(f"✓ Created bucket: {self.bucket_name}")
                 return True
             except Exception as e:
                 print(f"✗ Failed to create bucket: {e}")
                 raise
-    
+
     def create_folder_structure(self):
         """Create folder structure in COS bucket"""
-        print(f"\n📁 Creating folder structure...")
-        
-        folders = ['EU/', 'UK/', 'US/', 'templates/']
-        
+        print("\n📁 Creating folder structure...")
+
+        folders = ["EU/", "UK/", "US/", "templates/"]
+
         for folder in folders:
             try:
                 # Create empty object to represent folder
-                self.cos_client.put_object(
-                    Bucket=self.bucket_name,
-                    Key=folder,
-                    Body=b''
-                )
+                self.cos_client.put_object(Bucket=self.bucket_name, Key=folder, Body=b"")
                 print(f"✓ Created folder: {folder}")
             except Exception as e:
                 print(f"✗ Failed to create folder '{folder}': {e}")
-    
+
     def get_regulatory_mappings(self) -> List[Dict]:
         """Get regulatory document mappings"""
         base_url = f"https://{self.cos_endpoint}/{self.bucket_name}"
-        
+
         return [
             # EU Regulations
             {
@@ -128,10 +133,10 @@ class COSBucketSetup:
                     "Data breach notification within 72 hours",
                     "Right to erasure (right to be forgotten)",
                     "Data protection by design and by default",
-                    "Consent requirements for data processing"
+                    "Consent requirements for data processing",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["gdpr", "data-protection", "privacy", "eu"]
+                "tags": ["gdpr", "data-protection", "privacy", "eu"],
             },
             {
                 "_id": "reg_eu_ai_act",
@@ -147,10 +152,10 @@ class COSBucketSetup:
                     "Risk-based approach to AI systems",
                     "Transparency and explainability requirements",
                     "Human oversight for high-risk AI",
-                    "Prohibited AI practices"
+                    "Prohibited AI practices",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["ai-act", "artificial-intelligence", "eu", "regulation"]
+                "tags": ["ai-act", "artificial-intelligence", "eu", "regulation"],
             },
             {
                 "_id": "reg_eu_dma",
@@ -166,12 +171,11 @@ class COSBucketSetup:
                     "Gatekeeper obligations",
                     "Interoperability requirements",
                     "Data portability",
-                    "Fair competition practices"
+                    "Fair competition practices",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["dma", "competition", "digital-markets", "eu"]
+                "tags": ["dma", "competition", "digital-markets", "eu"],
             },
-            
             # UK Regulations
             {
                 "_id": "reg_uk_dpa",
@@ -187,10 +191,10 @@ class COSBucketSetup:
                     "GDPR compliance requirements",
                     "UK-specific data protection provisions",
                     "ICO enforcement powers",
-                    "Data subject rights"
+                    "Data subject rights",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["dpa", "data-protection", "gdpr", "uk"]
+                "tags": ["dpa", "data-protection", "gdpr", "uk"],
             },
             {
                 "_id": "reg_uk_online_safety",
@@ -206,12 +210,11 @@ class COSBucketSetup:
                     "Duty of care for users",
                     "Content moderation requirements",
                     "Age verification",
-                    "Transparency reporting"
+                    "Transparency reporting",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["online-safety", "content-moderation", "uk"]
+                "tags": ["online-safety", "content-moderation", "uk"],
             },
-            
             # US Regulations
             {
                 "_id": "reg_us_ccpa",
@@ -227,10 +230,10 @@ class COSBucketSetup:
                     "Right to know what data is collected",
                     "Right to delete personal information",
                     "Right to opt-out of data sale",
-                    "Non-discrimination for exercising rights"
+                    "Non-discrimination for exercising rights",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["ccpa", "data-protection", "privacy", "california", "us"]
+                "tags": ["ccpa", "data-protection", "privacy", "california", "us"],
             },
             {
                 "_id": "reg_us_cpra",
@@ -246,10 +249,10 @@ class COSBucketSetup:
                     "Sensitive personal information protections",
                     "Right to correct inaccurate data",
                     "Data minimization requirements",
-                    "California Privacy Protection Agency enforcement"
+                    "California Privacy Protection Agency enforcement",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["cpra", "ccpa", "data-protection", "california", "us"]
+                "tags": ["cpra", "ccpa", "data-protection", "california", "us"],
             },
             {
                 "_id": "reg_us_hipaa",
@@ -265,10 +268,10 @@ class COSBucketSetup:
                     "Protected Health Information (PHI) safeguards",
                     "Business Associate Agreements",
                     "Breach notification requirements",
-                    "Patient rights to access records"
+                    "Patient rights to access records",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["hipaa", "healthcare", "phi", "privacy", "us"]
+                "tags": ["hipaa", "healthcare", "phi", "privacy", "us"],
             },
             {
                 "_id": "reg_us_sox",
@@ -284,10 +287,10 @@ class COSBucketSetup:
                     "Internal controls over financial reporting",
                     "CEO/CFO certification of financial statements",
                     "Audit committee independence",
-                    "Document retention requirements"
+                    "Document retention requirements",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["sox", "financial", "compliance", "audit", "us"]
+                "tags": ["sox", "financial", "compliance", "audit", "us"],
             },
             {
                 "_id": "reg_us_ftc_act",
@@ -303,12 +306,11 @@ class COSBucketSetup:
                     "Prohibition of unfair practices",
                     "Prohibition of deceptive practices",
                     "Data security requirements",
-                    "Privacy policy enforcement"
+                    "Privacy policy enforcement",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["ftc", "consumer-protection", "unfair-practices", "us"]
+                "tags": ["ftc", "consumer-protection", "unfair-practices", "us"],
             },
-            
             # Multi-Jurisdiction
             {
                 "_id": "reg_multi_iso27001",
@@ -324,10 +326,10 @@ class COSBucketSetup:
                     "Information security management system (ISMS)",
                     "Risk assessment and treatment",
                     "Security controls implementation",
-                    "Continuous improvement"
+                    "Continuous improvement",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["iso27001", "information-security", "isms", "international"]
+                "tags": ["iso27001", "information-security", "isms", "international"],
             },
             {
                 "_id": "reg_multi_iso27701",
@@ -343,31 +345,31 @@ class COSBucketSetup:
                     "Privacy information management system (PIMS)",
                     "PII controller requirements",
                     "PII processor requirements",
-                    "GDPR mapping"
+                    "GDPR mapping",
                 ],
                 "last_updated": datetime.now().isoformat(),
-                "tags": ["iso27701", "privacy", "pims", "pii", "international"]
-            }
+                "tags": ["iso27701", "privacy", "pims", "pii", "international"],
+            },
         ]
-    
+
     def populate_regulatory_mappings(self) -> bool:
         """Populate regulatory mappings in Cloudant"""
         print(f"\n⚖️  Populating regulatory mappings in '{self.mappings_db}'...")
-        
+
         mappings = self.get_regulatory_mappings()
         success_count = 0
         error_count = 0
-        
+
         for mapping in mappings:
             try:
                 # Check if mapping already exists
                 try:
-                    self.cloudant_client.get_document(db=self.mappings_db, doc_id=mapping['_id'])
+                    self.cloudant_client.get_document(db=self.mappings_db, doc_id=mapping["_id"])
                     print(f"  Mapping '{mapping['regulation_id']}' already exists, skipping...")
                     continue
                 except Exception:
                     pass
-                
+
                 # Create document
                 document = Document(**mapping)
                 self.cloudant_client.post_document(db=self.mappings_db, document=document)
@@ -376,13 +378,13 @@ class COSBucketSetup:
             except Exception as e:
                 print(f"✗ Failed to add mapping '{mapping['regulation_id']}': {e}")
                 error_count += 1
-        
+
         print(f"\n✅ Successfully added {success_count} regulatory mappings")
         if error_count > 0:
             print(f"⚠️  {error_count} mappings failed to add")
-        
+
         return error_count == 0
-    
+
     def print_upload_instructions(self):
         """Print instructions for uploading regulatory PDFs"""
         print("\n" + "=" * 70)
@@ -398,7 +400,9 @@ class COSBucketSetup:
         print("  2. Configure credentials:")
         print(f"     aws configure set aws_access_key_id {self.cos_api_key[:10]}...")
         print("  3. Upload files:")
-        print(f"     aws s3 cp local_file.pdf s3://{self.bucket_name}/EU/ --endpoint-url https://{self.cos_endpoint}")
+        print(
+            f"     aws s3 cp local_file.pdf s3://{self.bucket_name}/EU/ --endpoint-url https://{self.cos_endpoint}"
+        )
         print("\nOption 3: Use the provided upload script")
         print("  python scripts/upload_regulatory_pdfs.py --folder /path/to/pdfs")
         print("\n" + "=" * 70)
@@ -426,55 +430,57 @@ class COSBucketSetup:
         print("  - US Government Publishing Office: https://www.govinfo.gov/")
         print("  - ISO: https://www.iso.org/ (standards may require purchase)")
         print("\n" + "=" * 70)
-    
+
     def verify_setup(self):
         """Verify COS bucket and mappings"""
-        print(f"\n🔍 Verifying setup...")
-        
+        print("\n🔍 Verifying setup...")
+
         try:
             # Verify bucket exists
             self.cos_client.head_bucket(Bucket=self.bucket_name)
             print(f"✓ Bucket '{self.bucket_name}' exists")
-            
+
             # List objects in bucket
             response = self.cos_client.list_objects_v2(Bucket=self.bucket_name)
-            object_count = response.get('KeyCount', 0)
+            object_count = response.get("KeyCount", 0)
             print(f"✓ Bucket contains {object_count} objects")
-            
+
             # Verify mappings database
-            db_info = self.cloudant_client.get_database_information(db=self.mappings_db).get_result()
-            doc_count = db_info.get('doc_count', 0)
+            db_info = self.cloudant_client.get_database_information(
+                db=self.mappings_db
+            ).get_result()
+            doc_count = db_info.get("doc_count", 0)
             print(f"✓ Regulatory mappings database contains {doc_count} documents")
-            
+
             print("\n✅ Setup verification complete!")
             return True
         except Exception as e:
             print(f"✗ Verification failed: {e}")
             return False
-    
+
     def run_setup(self):
         """Run complete COS setup"""
         print("=" * 70)
         print("LexConductor - Cloud Object Storage Setup")
         print("IBM Dev Day AI Demystified Hackathon 2026")
         print("=" * 70)
-        
+
         try:
             # Create bucket
             self.create_bucket()
-            
+
             # Create folder structure
             self.create_folder_structure()
-            
+
             # Populate regulatory mappings
             self.populate_regulatory_mappings()
-            
+
             # Verify setup
             self.verify_setup()
-            
+
             # Print upload instructions
             self.print_upload_instructions()
-            
+
             print("\n" + "=" * 70)
             print("✅ COS setup complete!")
             print("=" * 70)
@@ -483,7 +489,7 @@ class COSBucketSetup:
             print("2. Run: python scripts/populate_historical_decisions.py")
             print("3. Verify all data: python scripts/verify_data_layer.py")
             print("=" * 70)
-            
+
             return True
         except Exception as e:
             print(f"\n✗ Setup failed: {e}")

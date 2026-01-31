@@ -1,0 +1,22 @@
+# LexConductor - Terraform Variables Example
+# IBM Dev Day AI Demystified Hackathon 2026
+#
+# INSTRUCTIONS:
+# 1. Copy this file: cp terraform.tfvars.example terraform.tfvars
+# 2. Fill in your actual values
+# 3. NEVER commit terraform.tfvars to git
+
+# GitHub Configuration
+github_token = "ghp_your_github_personal_access_token_here"
+github_owner = "your-github-username-or-org"
+
+# Repository Configuration
+repository_name = "lex-conductor"
+
+# Required Status Checks (CI/CD checks that must pass)
+required_status_checks = [
+  "pre-commit",
+  "black",
+  "ruff",
+  "mypy"
+]

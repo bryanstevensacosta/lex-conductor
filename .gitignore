@@ -378,7 +378,18 @@ yarn-error.log
 # Terraform (if using IaC)
 *.tfstate
 *.tfstate.*
+*.tfvars
+!*.tfvars.example
 .terraform/
+.terraform.lock.hcl
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
 
 # Ansible (if using configuration management)
 *.retry

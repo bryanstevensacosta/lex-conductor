@@ -22,31 +22,31 @@ load_dotenv()
 
 class HistoricalDecisionsPopulator:
     """Populate Historical Decisions in Cloudant"""
-    
+
     def __init__(self):
         """Initialize Cloudant client"""
-        self.cloudant_url = os.getenv('CLOUDANT_URL')
-        self.cloudant_api_key = os.getenv('CLOUDANT_API_KEY')
-        self.db_name = os.getenv('CLOUDANT_DB_HISTORICAL_DECISIONS', 'historical_decisions')
-        
+        self.cloudant_url = os.getenv("CLOUDANT_URL")
+        self.cloudant_api_key = os.getenv("CLOUDANT_API_KEY")
+        self.db_name = os.getenv("CLOUDANT_DB_HISTORICAL_DECISIONS", "historical_decisions")
+
         if not self.cloudant_url or not self.cloudant_api_key:
             raise ValueError(
                 "Missing Cloudant credentials. Please set CLOUDANT_URL and CLOUDANT_API_KEY"
             )
-        
+
         # Initialize client
         authenticator = IAMAuthenticator(self.cloudant_api_key)
         self.client = CloudantV1(authenticator=authenticator)
         self.client.set_service_url(self.cloudant_url)
-        
+
         print(f"✓ Connected to Cloudant: {self.cloudant_url}")
         print(f"✓ Target database: {self.db_name}")
-    
+
     def get_historical_decisions(self) -> List[Dict]:
         """Get sample historical decisions"""
         # Generate dates for the past 6 months
         base_date = datetime.now()
-        
+
         return [
             # NDA Decisions
             {
@@ -63,7 +63,7 @@ class HistoricalDecisionsPopulator:
                 "jurisdiction": "US",
                 "confidence": 0.95,
                 "tags": ["data-breach", "liability-cap", "ccpa", "indemnification"],
-                "regulatory_basis": ["CCPA_2026", "CPRA_2023"]
+                "regulatory_basis": ["CCPA_2026", "CPRA_2023"],
             },
             {
                 "_id": "dec_2025_Q4_002",
@@ -78,10 +78,14 @@ class HistoricalDecisionsPopulator:
                 "date": (base_date - timedelta(days=60)).isoformat(),
                 "jurisdiction": "US",
                 "confidence": 0.92,
-                "tags": ["confidentiality", "definition", "exclusions", "best-practices"],
-                "regulatory_basis": []
+                "tags": [
+                    "confidentiality",
+                    "definition",
+                    "exclusions",
+                    "best-practices",
+                ],
+                "regulatory_basis": [],
             },
-            
             # MSA Decisions
             {
                 "_id": "dec_2025_Q3_003",
@@ -97,7 +101,7 @@ class HistoricalDecisionsPopulator:
                 "jurisdiction": "Multi-Jurisdiction",
                 "confidence": 0.97,
                 "tags": ["liability-cap", "carve-outs", "gdpr", "ccpa", "data-breach"],
-                "regulatory_basis": ["GDPR_Article_82", "CCPA_1798.150"]
+                "regulatory_basis": ["GDPR_Article_82", "CCPA_1798.150"],
             },
             {
                 "_id": "dec_2025_Q3_004",
@@ -113,9 +117,8 @@ class HistoricalDecisionsPopulator:
                 "jurisdiction": "EU",
                 "confidence": 0.98,
                 "tags": ["data-processing", "gdpr", "article-28", "dpa", "security"],
-                "regulatory_basis": ["GDPR_Article_28", "GDPR_Article_32"]
+                "regulatory_basis": ["GDPR_Article_28", "GDPR_Article_32"],
             },
-            
             # Service Agreement Decisions
             {
                 "_id": "dec_2025_Q4_005",
@@ -131,7 +134,7 @@ class HistoricalDecisionsPopulator:
                 "jurisdiction": "US",
                 "confidence": 0.89,
                 "tags": ["sla", "uptime", "service-credits", "remedies", "saas"],
-                "regulatory_basis": []
+                "regulatory_basis": [],
             },
             {
                 "_id": "dec_2025_Q3_006",
@@ -147,7 +150,7 @@ class HistoricalDecisionsPopulator:
                 "jurisdiction": "US",
                 "confidence": 0.91,
                 "tags": ["termination", "notice-period", "transition", "data-export"],
-                "regulatory_basis": []
+                "regulatory_basis": [],
             },
             {
                 "_id": "dec_2025_Q4_007",
@@ -162,10 +165,14 @@ class HistoricalDecisionsPopulator:
                 "date": (base_date - timedelta(days=26)).isoformat(),
                 "jurisdiction": "US",
                 "confidence": 0.94,
-                "tags": ["intellectual-property", "ownership", "deliverables", "work-product"],
-                "regulatory_basis": []
+                "tags": [
+                    "intellectual-property",
+                    "ownership",
+                    "deliverables",
+                    "work-product",
+                ],
+                "regulatory_basis": [],
             },
-            
             # Cross-Contract Decisions
             {
                 "_id": "dec_2025_Q3_008",
@@ -180,8 +187,13 @@ class HistoricalDecisionsPopulator:
                 "date": (base_date - timedelta(days=117)).isoformat(),
                 "jurisdiction": "US",
                 "confidence": 0.88,
-                "tags": ["dispute-resolution", "arbitration", "aaa", "injunctive-relief"],
-                "regulatory_basis": []
+                "tags": [
+                    "dispute-resolution",
+                    "arbitration",
+                    "aaa",
+                    "injunctive-relief",
+                ],
+                "regulatory_basis": [],
             },
             {
                 "_id": "dec_2025_Q4_009",
@@ -196,8 +208,13 @@ class HistoricalDecisionsPopulator:
                 "date": (base_date - timedelta(days=43)).isoformat(),
                 "jurisdiction": "US",
                 "confidence": 0.93,
-                "tags": ["insurance", "liability", "cyber-insurance", "coverage-amounts"],
-                "regulatory_basis": []
+                "tags": [
+                    "insurance",
+                    "liability",
+                    "cyber-insurance",
+                    "coverage-amounts",
+                ],
+                "regulatory_basis": [],
             },
             {
                 "_id": "dec_2025_Q3_010",
@@ -212,29 +229,34 @@ class HistoricalDecisionsPopulator:
                 "date": (base_date - timedelta(days=112)).isoformat(),
                 "jurisdiction": "US",
                 "confidence": 0.96,
-                "tags": ["remedies", "injunctive-relief", "attorneys-fees", "enforcement"],
-                "regulatory_basis": []
-            }
+                "tags": [
+                    "remedies",
+                    "injunctive-relief",
+                    "attorneys-fees",
+                    "enforcement",
+                ],
+                "regulatory_basis": [],
+            },
         ]
-    
+
     def populate_decisions(self) -> bool:
         """Populate historical decisions in Cloudant"""
         print(f"\n📜 Populating historical decisions in '{self.db_name}'...")
-        
+
         decisions = self.get_historical_decisions()
         success_count = 0
         error_count = 0
-        
+
         for decision in decisions:
             try:
                 # Check if decision already exists
                 try:
-                    self.client.get_document(db=self.db_name, doc_id=decision['_id'])
+                    self.client.get_document(db=self.db_name, doc_id=decision["_id"])
                     print(f"  Decision '{decision['decision_id']}' already exists, skipping...")
                     continue
                 except Exception:
                     pass
-                
+
                 # Create document
                 document = Document(**decision)
                 self.client.post_document(db=self.db_name, document=document)
@@ -243,79 +265,75 @@ class HistoricalDecisionsPopulator:
             except Exception as e:
                 print(f"✗ Failed to add decision '{decision['decision_id']}': {e}")
                 error_count += 1
-        
+
         print(f"\n✅ Successfully added {success_count} historical decisions")
         if error_count > 0:
             print(f"⚠️  {error_count} decisions failed to add")
-        
+
         return error_count == 0
-    
+
     def verify_population(self):
         """Verify historical decisions were populated correctly"""
         print(f"\n🔍 Verifying historical decisions in '{self.db_name}'...")
-        
+
         try:
             # Get database info
             db_info = self.client.get_database_information(db=self.db_name).get_result()
-            doc_count = db_info.get('doc_count', 0)
-            
+            doc_count = db_info.get("doc_count", 0)
+
             print(f"✓ Total documents in database: {doc_count}")
-            
+
             # Query by contract type
             contract_types = ["NDA", "MSA", "Service Agreement"]
             for contract_type in contract_types:
                 result = self.client.post_find(
                     db=self.db_name,
                     selector={"contract_type": contract_type},
-                    limit=100
+                    limit=100,
                 ).get_result()
-                
-                count = len(result.get('docs', []))
+
+                count = len(result.get("docs", []))
                 print(f"  {contract_type}: {count} decisions")
-            
+
             # Query by jurisdiction
             jurisdictions = ["US", "EU", "UK", "Multi-Jurisdiction"]
             print("\nBy jurisdiction:")
             for jurisdiction in jurisdictions:
                 result = self.client.post_find(
-                    db=self.db_name,
-                    selector={"jurisdiction": jurisdiction},
-                    limit=100
+                    db=self.db_name, selector={"jurisdiction": jurisdiction}, limit=100
                 ).get_result()
-                
-                count = len(result.get('docs', []))
+
+                count = len(result.get("docs", []))
                 if count > 0:
                     print(f"  {jurisdiction}: {count} decisions")
-            
+
             # Query high confidence decisions
             result = self.client.post_find(
-                db=self.db_name,
-                selector={"confidence": {"$gte": 0.9}},
-                limit=100
+                db=self.db_name, selector={"confidence": {"$gte": 0.9}}, limit=100
             ).get_result()
-            high_confidence_count = len(result.get('docs', []))
+            high_confidence_count = len(result.get("docs", []))
             print(f"\nHigh confidence (≥0.9): {high_confidence_count} decisions")
-            
+
             print("\n✅ Historical decisions verification complete!")
             return True
         except Exception as e:
             print(f"✗ Verification failed: {e}")
             return False
-    
+
     def run_population(self):
         """Run complete population process"""
         print("=" * 70)
         print("LexConductor - Historical Decisions Population")
         print("IBM Dev Day AI Demystified Hackathon 2026")
         print("=" * 70)
-        
+
         try:
             # Populate decisions
             success = self.populate_decisions()
-            
+
             # Verify population
             self.verify_population()
-            
+
             print("\n" + "=" * 70)
             print("✅ Historical decisions population complete!")
             print("=" * 70)
@@ -328,7 +346,7 @@ class HistoricalDecisionsPopulator:
             print("2. Verify complete data layer: python scripts/verify_data_layer.py")
             print("3. Start implementing agents: Task 3 in tasks.md")
             print("=" * 70)
-            
+
             return success
         except Exception as e:
             print(f"\n✗ Population failed: {e}")

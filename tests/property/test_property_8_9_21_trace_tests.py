@@ -11,7 +11,7 @@ Property 21: Low Confidence Flagging
 
 import pytest
 from hypothesis import given, strategies as st, settings
-from datetime import datetime
+from datetime import datetime, timezone
 
 from backend.models import (
     ContractType,
@@ -144,7 +144,7 @@ def test_trace_generation_produces_valid_output(
     )
 
     # Generate header
-    header = _generate_header(request, datetime.utcnow().isoformat())
+    header = _generate_header(request, datetime.now(timezone.utc).isoformat())
 
     # Verify header is generated
     assert header is not None
@@ -192,7 +192,7 @@ def test_trace_contains_all_required_sections(
     )
 
     # Generate all sections
-    header = _generate_header(request, datetime.utcnow().isoformat())
+    header = _generate_header(request, datetime.now(timezone.utc).isoformat())
     signal_analysis = _generate_signal_analysis(fusion_analysis, [])
     risk_assessment = _generate_risk_assessment(routing_decision)
     recommendations = _generate_recommendations(fusion_analysis)

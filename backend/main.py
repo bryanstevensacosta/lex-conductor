@@ -20,7 +20,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
 
-from backend.routers import fusion, routing, memory, traceability
+from backend.routers import fusion, routing, memory, traceability, agent_connect
 
 # Configure structured JSON logging
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -173,6 +173,9 @@ app.include_router(fusion.router, prefix="/fusion", tags=["fusion"])
 app.include_router(routing.router, prefix="/routing", tags=["routing"])
 app.include_router(memory.router, prefix="/memory", tags=["memory"])
 app.include_router(traceability.router, prefix="/traceability", tags=["traceability"])
+
+# Include Agent Connect router (for watsonx Orchestrate integration)
+app.include_router(agent_connect.router, tags=["agent-connect"])
 
 
 if __name__ == "__main__":

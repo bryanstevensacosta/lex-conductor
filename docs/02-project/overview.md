@@ -4,7 +4,7 @@ inclusion: always
 
 # Product Overview
 
-Boardroom AI is a multi-agent decision orchestration system that simulates a boardroom of AI experts collaborating on complex business decisions.
+LexConductor is a multi-agent decision orchestration system that simulates a boardroom of AI experts collaborating on complex business decisions.
 
 ## Core Concept
 

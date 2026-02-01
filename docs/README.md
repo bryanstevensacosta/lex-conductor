@@ -1,17 +1,12 @@
-# Lex Conductor - Documentation
+# Lex Conductor
 
 Complete documentation for the Lex Conductor multi-agent orchestration system powered by IBM watsonx Orchestrate.
 
-## 🌐 Setup Guides / Guías de Configuración
+## 🌐 Setup Guides 
 
-### English
 - **[IBM Cloud Setup Guide](./IBM_CLOUD_SETUP.md)** - Complete step-by-step guide to set up all IBM Cloud services
 - **[Quick Start Guide](./QUICK_START.md)** - Get up and running in 15 minutes
 - **[Task 1 Completion Summary](./TASK_1_COMPLETION.md)** - Development environment setup summary
-
-### Español 🇪🇸
-- **[Guía Completa de Credenciales](./GUIA_CREDENCIALES_ES.md)** - Guía detallada paso a paso para obtener todas las credenciales de IBM Cloud
-- **[Guía Rápida](./GUIA_RAPIDA_ES.md)** - Configuración rápida en 35 minutos
 
 ---
 

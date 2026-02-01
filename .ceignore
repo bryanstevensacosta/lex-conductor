@@ -1,0 +1,98 @@
+# Code Engine ignore file - exclude unnecessary files from build
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# Testing
+.pytest_cache/
+.hypothesis/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Git
+.git/
+.gitignore
+.githooks/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+deployment.log
+
+# Terraform
+terraform/
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Scripts (not needed in container)
+scripts/
+
+# Test files
+tests/
+conftest.py
+
+# Hackathon docs
+DEMO_SCRIPT.md
+DEPLOYMENT*.md
+INTEGRATION*.md
+ORCHESTRATE*.md
+PRE_COMMIT*.md
+QUICK_START*.md
+SUBMISSION*.md
+SYSTEM_STATUS*.md
+TASK_*.md
+CURRENT_STATUS.md
+FINAL_SUBMISSION_CHECKLIST.md
+UI_TESTING_GUIDE.md
+MANUAL_TESTING_GUIDE.md
+CODE_OF_CONDUCT.md
+LICENSE
+
+# Agent definitions (already deployed)
+agents/
+
+# Hackathon folder
+hackathon/
+
+# Screenshots
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Environment files (use Code Engine secrets instead)
+.env
+.env.*
+!.env.example
+
+# Docker (not needed, using Code Engine build)
+.dockerignore
+
+# Pre-commit
+.pre-commit-config.yaml

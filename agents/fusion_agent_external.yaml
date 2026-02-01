@@ -1,11 +1,12 @@
-name: fusion-agent
+spec_version: v1
+name: fusion_agent
 version: 1.0.0
 description: Correlates internal policies with external regulations for comprehensive legal analysis
 type: external
 
 connection:
   type: agent_connect
-  endpoint: https://lexconductor-agents.25rf0qd39xzz.jp-osa.codeengine.appdomain.cloud/fusion/analyze
+  endpoint: https://lexconductor-agents.25rf0qd39xzz.jp-osa.codeengine.appdomain.cloud/fusion/v1/chat
   timeout: 30
   retry:
     max_attempts: 3

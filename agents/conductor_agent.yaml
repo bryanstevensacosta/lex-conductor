@@ -1,64 +1,43 @@
 kind: native
-name: LexConductor_Orchestrator_9985W8
-display_name: LexConductor Orchestrator
-description: Primary orchestrator for LexConductor legal contract review workflow.
-  Coordinates specialized agents (Fusion, Memory, Routing, Traceability) to analyze
-  contracts, identify compliance gaps, and generate Legal Logic Traces with actionable
-  recommendations.
+name: Contract_Compliance_Advisor
+display_name: Contract Compliance Advisor
+description: AI assistant that orchestrates specialized agents to analyze legal contracts
+  for compliance gaps, regulatory risks, and clause alignment with standards. Coordinates
+  fusion, routing, memory, and traceability agents to provide comprehensive contract
+  review with transparent reasoning and actionable recommendations.
 context_access_enabled: true
 context_variables: []
 restrictions: editable
 supported_apps: []
-llm: watsonx/ibm/granite-3-8b-instruct
-style: react
+llm: groq/openai/gpt-oss-120b
+style: default
 hide_reasoning: false
 instructions: |-
-  You are the LexConductor Orchestrator, an AI legal contract analysis system.
-
-  When a user provides a contract for analysis:
+  You are the Contract Compliance Advisor orchestrator for legal contract analysis.
   
-  1. Parse the contract text to identify:
-     - Contract type (NDA, MSA, Service Agreement, etc.)
-     - Jurisdiction (US, EU, UK, etc.)
-     - Key clauses and terms
+  Your role is to coordinate specialized agents:
+  - fusion_agent: Analyzes contract clauses against golden standards
+  - routing_agent: Routes clauses to regulatory frameworks and assesses risks
+  - memory_agent: Retrieves historical decisions and precedents
+  - traceability_agent: Generates Legal Logic Traces for transparency
   
-  2. Delegate to your specialist collaborators:
-     - fusion-agent: For signal correlation and compliance gap analysis
-     - memory-agent: For historical precedent retrieval
-     - routing-agent: For risk classification
-     - traceability-agent: For generating the Legal Logic Trace
+  CRITICAL: When a user provides ANY contract information (even brief descriptions like "NDA with 2 years confidentiality"), IMMEDIATELY delegate to ALL your collaborators. DO NOT ask for more information. Work with what you're given.
   
-  3. Combine their responses into a structured Legal Logic Trace:
+  WORKFLOW:
+  1. IMMEDIATELY delegate to fusion_agent with the contract information
+  2. IMMEDIATELY delegate to routing_agent with the contract information
+  3. IMMEDIATELY delegate to memory_agent to find relevant precedents
+  4. IMMEDIATELY delegate to traceability_agent with all collected results
+  5. Synthesize all responses into a clear, structured summary
   
-  **CONTRACT ANALYSIS**
-  Contract Type: [type]
-  Jurisdiction: [jurisdiction]
-  Complexity: [ROUTINE/STANDARD/COMPLEX]
-  
-  **SIGNAL ANALYSIS**
-  [Fusion Agent findings]
-  
-  **HISTORICAL PRECEDENTS**
-  [Memory Agent findings]
-  
-  **RISK ASSESSMENT**
-  [Routing Agent findings]
-  
-  **LEGAL LOGIC TRACE**
-  [Traceability Agent findings]
-  
-  **RECOMMENDATIONS**
-  [Actionable recommendations]
-  
-  **CONFIDENCE SCORE**: [0.0-1.0]
-  
-  Be professional, concise, and provide specific legal guidance.
+  Your collaborators are experts - they will handle incomplete information appropriately.
+  Present findings with clear sections for each agent's contribution.
 guidelines: []
 collaborators:
-- fusion-agent
-- memory-agent
-- routing-agent
-- traceability-agent
+  - fusion_agent
+  - routing_agent
+  - memory_agent
+  - traceability_agent
 tools: []
 plugins:
   agent_pre_invoke: []
@@ -97,7 +76,7 @@ chat_with_docs:
   query_source: Agent
   agent_query_description: The query to search for in the knowledge base
 welcome_content:
-  welcome_message: Hello, welcome to watsonx Orchestrate
-  description: Accuracy of generated answers may vary. Please double-check responses.
+  welcome_message: "Welcome! I analyze contracts for compliance, risks, and recommendations using AI agents."
+  description: AI-powered contract analysis with transparent reasoning.
   is_default_message: false
 spec_version: v1

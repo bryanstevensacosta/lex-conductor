@@ -1,4 +1,4 @@
-# Git Hooks - Boardroom AI
+# Git Hooks - LexConductor
 
 ## Overview
 
@@ -201,7 +201,7 @@ When a new team member clones the repository:
 ```bash
 # Clone repository
 git clone <repository-url>
-cd boardroom-ai
+cd lexconductor
 
 # Install hooks
 ./githooks/install.sh

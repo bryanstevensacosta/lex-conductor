@@ -39,7 +39,7 @@ All work must be completed and submitted before this time. Late submissions will
 
 ```
 [0:00-0:15] Introduction
-"Boardroom AI solves complex business decisions using multi-agent AI orchestration"
+"LexConductor solves complex business decisions using multi-agent AI orchestration"
 
 [0:15-0:30] Problem Statement
 "Traditional decision-making is slow, siloed, and lacks transparency"
@@ -104,7 +104,7 @@ lack transparency. Decision-makers struggle to synthesize diverse perspectives
 efficiently, leading to delayed decisions and potential blind spots.
 
 SOLUTION:
-Boardroom AI is a multi-agent decision orchestration system powered by IBM 
+LexConductor is a multi-agent decision orchestration system powered by IBM 
 watsonx Orchestrate. It simulates a boardroom of AI experts that collaborate 
 in real-time to analyze business questions from multiple perspectives. The 
 system uses specialized agents (Strategy, Finance, Risk, Operations) that 
@@ -125,7 +125,7 @@ powered by IBM Granite models with domain-specific prompts, ensuring expert-
 level analysis across all business dimensions.
 
 IMPACT:
-Boardroom AI reduces decision-making time from days to minutes while improving 
+LexConductor reduces decision-making time from days to minutes while improving 
 quality through multi-perspective analysis. The transparent reasoning trail 
 enables auditable decisions and reduces bias. Organizations can make faster, 
 more informed decisions with confidence.
@@ -173,14 +173,14 @@ more informed decisions with confidence.
 ```
 WATSONX ORCHESTRATE USAGE:
 
-Boardroom AI uses IBM watsonx Orchestrate as the primary orchestration platform. 
-A native Orchestrator Agent (boardroom_orchestrator) manages the entire decision 
+LexConductor uses IBM watsonx Orchestrate as the primary orchestration platform. 
+A native Orchestrator Agent (lexconductor_orchestrator) manages the entire decision 
 workflow, coordinating five specialized external agents through the Agent Connect 
 Framework.
 
 AGENT INVENTORY:
 
-1. Boardroom Orchestrator (Native in watsonx Orchestrate)
+1. LexConductor Orchestrator (Native in watsonx Orchestrate)
 2. Strategy Agent (External - FastAPI)
 3. Finance Agent (External - FastAPI)
 4. Risk Agent (External - FastAPI)
@@ -189,7 +189,7 @@ AGENT INVENTORY:
 
 AGENT DESCRIPTIONS:
 
-Boardroom Orchestrator:
+LexConductor Orchestrator:
 - Receives business questions from users
 - Routes requests to appropriate specialist agents
 - Manages parallel execution of analyses
@@ -288,7 +288,7 @@ TECHNOLOGY INTEGRATION:
 #### What to Include
 
 ```
-boardroom-ai/
+lexconductor/
 ├── README.md                    # Project overview and setup
 ├── INTEGRATION-GUIDE.md         # Detailed integration docs
 ├── requirements.txt             # Python dependencies

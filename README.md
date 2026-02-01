@@ -267,7 +267,8 @@ orchestrate chat --agent conductor-agent
 |--------|------|----------|--------|---------|
 | **Bryan Stevens Nuñez Acosta** | Team Lead | [LinkedIn](https://linkedin.com/in/bryan-stevens-acosta) | [GitHub](https://github.com/bryanstevensacosta) | [Portfolio/Website](https://bryanacosta.vercel.app) |
 | **Umer Ahmed** | Team PM | [LinkedIn](https://www.linkedin.com/in/umerahmed245/) | [GitHub](https://github.com/umerahmed245) | [Portfolio/Website](https://flowcv.me/umer-ahmed) |
-| **David Adenuga** | Team Member | [LinkedIn](https://www.linkedin.com/in/adenuga-david-chemicalengineering/) | [GitHub]([https://github.com/umerahmed245](https://github.com/Nuga-D)) |
+| **David Adenuga** | Team Member | [LinkedIn](https://www.linkedin.com/in/adenuga-david-chemicalengineering/) | [GitHub]((https://github.com/Nuga-D)) |
+| **Samuel Akinnusi** | Team Member | [LinkedIn](https://www.linkedin.com/in/samuel-akinnusi-487255193/) | [GitHub](https://github.com/Samiozy) |
 
 
 > 💡 **Team Philosophy**: Leveraging collective intelligence through AI orchestration to solve complex business challenges.

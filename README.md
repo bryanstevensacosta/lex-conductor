@@ -34,6 +34,7 @@ Multi-agent decision orchestration system powered by IBM watsonx Orchestrate.
 
 ---
 
+
 ## 🎯 Hackathon Overview
 
 **Event**: IBM Dev Day: AI Demystified  
@@ -42,6 +43,7 @@ Multi-agent decision orchestration system powered by IBM watsonx Orchestrate.
 **Event Date**: January 29, 2026  
 **Hackathon Period**: January 30 - February 1, 2026  
 **Submission Deadline**: **February 1, 2026 - 10:00 AM ET** ⏰
+
 
 ### Event Highlights
 - 🎓 **19 Hours** of programming content

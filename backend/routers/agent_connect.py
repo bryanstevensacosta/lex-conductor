@@ -11,7 +11,6 @@ from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from backend.routers import fusion, routing, memory, traceability
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ class ChatCompletionResponse(BaseModel):
     usage: Optional[Dict[str, int]] = {
         "prompt_tokens": 0,
         "completion_tokens": 0,
-        "total_tokens": 0
+        "total_tokens": 0,
     }
     messages: Optional[List[Dict[str, Any]]] = None  # For Agent Connect context passing
 
@@ -220,22 +219,18 @@ async def fusion_chat_completions(request: ChatCompletionRequest):
 
         # Build updated messages array for Agent Connect context passing
         updated_messages = [msg.dict() for msg in request.messages]
-        updated_messages.append({
-            "role": "assistant",
-            "content": response_text
-        })
+        updated_messages.append({"role": "assistant", "content": response_text})
 
         return ChatCompletionResponse(
             model="fusion-agent",
-            choices=[{
-                "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": response_text
-                },
-                "finish_reason": "stop"
-            }],
-            messages=updated_messages
+            choices=[
+                {
+                    "index": 0,
+                    "message": {"role": "assistant", "content": response_text},
+                    "finish_reason": "stop",
+                }
+            ],
+            messages=updated_messages,
         )
 
     except Exception as e:
@@ -369,22 +364,18 @@ This NDA presents MEDIUM risk due to regulatory compliance gaps rather than fund
 
         # Build updated messages array for Agent Connect context passing
         updated_messages = [msg.dict() for msg in request.messages]
-        updated_messages.append({
-            "role": "assistant",
-            "content": response_text
-        })
+        updated_messages.append({"role": "assistant", "content": response_text})
 
         return ChatCompletionResponse(
             model="routing-agent",
-            choices=[{
-                "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": response_text
-                },
-                "finish_reason": "stop"
-            }],
-            messages=updated_messages
+            choices=[
+                {
+                    "index": 0,
+                    "message": {"role": "assistant", "content": response_text},
+                    "finish_reason": "stop",
+                }
+            ],
+            messages=updated_messages,
         )
 
     except Exception as e:
@@ -574,22 +565,18 @@ Extended to 5 years + added security standards + audit rights clause
 
         # Build updated messages array for Agent Connect context passing
         updated_messages = [msg.dict() for msg in request.messages]
-        updated_messages.append({
-            "role": "assistant",
-            "content": response_text
-        })
+        updated_messages.append({"role": "assistant", "content": response_text})
 
         return ChatCompletionResponse(
             model="memory-agent",
-            choices=[{
-                "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": response_text
-                },
-                "finish_reason": "stop"
-            }],
-            messages=updated_messages
+            choices=[
+                {
+                    "index": 0,
+                    "message": {"role": "assistant", "content": response_text},
+                    "finish_reason": "stop",
+                }
+            ],
+            messages=updated_messages,
         )
 
     except Exception as e:
@@ -857,22 +844,18 @@ IF (precedent_success_rate > 0.85)
 
         # Build updated messages array for Agent Connect context passing
         updated_messages = [msg.dict() for msg in request.messages]
-        updated_messages.append({
-            "role": "assistant",
-            "content": response_text
-        })
+        updated_messages.append({"role": "assistant", "content": response_text})
 
         return ChatCompletionResponse(
             model="traceability-agent",
-            choices=[{
-                "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": response_text
-                },
-                "finish_reason": "stop"
-            }],
-            messages=updated_messages
+            choices=[
+                {
+                    "index": 0,
+                    "message": {"role": "assistant", "content": response_text},
+                    "finish_reason": "stop",
+                }
+            ],
+            messages=updated_messages,
         )
 
     except Exception as e:
